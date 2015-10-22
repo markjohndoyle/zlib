@@ -1,0 +1,110 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>zlib</groupId>
+    <artifactId>zlib</artifactId>
+    <version>1.2.8</version>
+    <packaging>nar</packaging>
+
+    <name>ZLIB</name>
+    <description>
+        ZLIB compression software.
+    </description>
+
+    <properties>
+        <!-- Maven plugin versions -->
+        <nar-plugin.version>3.2.4-SNAPSHOT</nar-plugin.version>
+        <!-- Native project -->
+        <compiler-name>gcc</compiler-name>
+        <linker-name>gcc</linker-name>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.maven-nar</groupId>
+                <artifactId>nar-maven-plugin</artifactId>
+                <version>${nar-plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <cpp>
+                        <name>${compiler-name}</name>
+                        <includes>
+                            <include>**/*.hpp</include>
+                            <include>**/*.h</include>
+                            <include>**/*.cpp</include>
+                            <include>**/*.c</include>
+                        </includes>
+                        <debug>false</debug>
+                        <optimize>full</optimize>
+                        <options combine.children="append">
+                        </options>
+                    </cpp>
+                    <linker>
+                        <name>${linker-name}</name>
+                    </linker>
+                    <libraries>
+                        <library>
+                            <type>shared</type>
+                        </library>
+                    </libraries>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+    <profiles>
+        <profile>
+            <id>windows-common</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.maven-nar</groupId>
+                        <artifactId>nar-maven-plugin</artifactId>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <cpp>
+                                <options combine.children="append">
+                                    <option>-mthreads</option>
+                                </options>
+                            </cpp>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>linux-common</id>
+            <activation>
+                <os>
+                    <family>linux</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.maven-nar</groupId>
+                        <artifactId>nar-maven-plugin</artifactId>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <cpp>
+                                <options combine.children="append">
+                                    <option>-pthread</option>
+                                </options>
+                            </cpp>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
+
